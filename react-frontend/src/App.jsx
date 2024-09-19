@@ -31,6 +31,16 @@ function App() {
 
     setUsers([...users, newUser]);  // spread operator and append to array at the end of the array
 }
+
+ const deleteUser = async (e) => {
+  await fetch(`${hostUrl}api/users/${e.target.dataset.id}`, {
+  method: "DELETE",
+  headers: {
+      "Content-type": "application/json",
+  },
+  });
+  await fetchUsers();
+}
   return (
     <><div>
 
@@ -41,6 +51,7 @@ function App() {
             <th>Name</th>
             <th>Is Admin</th>
             <th>Is Active</th>
+            <th>Delete</th>
           </tr>
         </thead>
         <tbody>
@@ -49,6 +60,7 @@ function App() {
               <td>{user.name}</td>
               <td>{user.isAdmin.toString()}</td>
               <td>{user.isActive.toString()}</td>
+              <td><button data-id={user.id} onClick={deleteUser}>Delete</button></td>
             </tr>
           ))}
         </tbody>
@@ -63,7 +75,7 @@ function App() {
           <input type="checkbox" name="isActive" />
           <input type="submit" />
         </form>
-        
+      
       </div></>
  );
 }

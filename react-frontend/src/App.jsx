@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import "bootstrap";
+//import "EventHandler";
 
 function App() {
   const [users, setUsers] = useState([]);
@@ -24,12 +25,13 @@ function App() {
   const createUser = async (e) => {
     //e - event
     console.log(e);
-    //e.preventDefault()  // prevents from reloading the page if there is any changes
+    e.preventDefault()  // prevents from reloading the page if there is any changes
     const response = await fetch(`${hostUrl}api/users`, {
       method: "POST",
       headers: {
         "Content-type": "application/json",
       },
+     
       body: JSON.stringify({
         name: e.target.name.value,
         isAdmin: e.target.isAdmin.checked,
@@ -62,7 +64,19 @@ function App() {
     await response.json();
     await fetchUsers();
   };
-
+   
+ /* const onsubmit = async (e) =>
+  {
+    e.preventDefault();
+   const submitres=e.target.name.value;
+   if (submitres != null){      
+    console.log("Enter valid username");
+    return;
+  }
+  else {
+   return submitres;
+  }  };
+*/
   return (
     <>
       <div>
@@ -74,13 +88,10 @@ function App() {
           <input type="checkbox" name="isAdmin" />
           <label htmlFor="isActive">Is Active</label>
           <input type="checkbox" name="isActive" />
-          <button type="submit" class="submit">
-            submit
-          </button>
+          <button type="submit" class="submit">submit</button>
         </form>
-      </div>
-      <div>
-        <h1>Users</h1>
+     
+       <h1>Users</h1>
         <table class="table">
           <thead>
             <tr>
@@ -98,21 +109,14 @@ function App() {
                 <td>{user.isAdmin.toString()}</td>
                 <td>{user.isActive.toString()}</td>
                 <td>
-                  <input
-                    data-id={user.id}
-                    type="checkbox"
-                    checked={user.isAdmin}
-                    onChange={updateUser}
-                  />
+                  <input data-id={user.id} type="checkbox" checked={user.isAdmin} onChange={updateUser}/>
                 </td>
                 <td>
-                  <button data-id={user.id} onClick={deleteUser}>
-                    Delete
-                  </button>
+                  <button data-id={user.id} onClick={deleteUser}>Delete</button>
                 </td>
-              </tr>
-            ))}
-          </tbody>
+              </tr>)
+              )
+            }</tbody>
         </table>
       </div>
     </>

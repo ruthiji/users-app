@@ -34,8 +34,8 @@ function App() {
      
       body: JSON.stringify({
         name: e.target.name.value,
-        isAdmin: e.target.isAdmin.checked,
-        isActive: e.target.isActive.checked,
+        isManager: e.target.isManager.checked,
+        isActive: e.target.isActive.checked
       }),
     });
     const newUser = await response.json();
@@ -84,8 +84,8 @@ function App() {
         <form onSubmit={createUser}>
           <label htmlFor="name">Name</label>
           <input type="text" name="name" id="name" />
-          <label htmlFor="isAdmin">Is Admin</label>
-          <input type="checkbox" name="isAdmin" />
+          <label htmlFor="isManager">Is Manager</label>
+          <input type="checkbox" name="isManager" />
           <label htmlFor="isActive">Is Active</label>
           <input type="checkbox" name="isActive" />
           <button type="submit" class="submit">submit</button>
@@ -96,8 +96,9 @@ function App() {
           <thead>
             <tr>
               <th scope="col">Name</th>
-              <th scope="col">Is Admin</th>
+              <th scope="col">Is Manager</th>
               <th scope="col">Is Active</th>
+              <th scope="col">AdminRole</th>
               <th scope="col">Update</th>
               <th scope="col">Delete</th>
             </tr>
@@ -106,8 +107,9 @@ function App() {
             {users.map((user) => (
               <tr key={user.id}>
                 <td>{user.name}</td>
-                <td>{user.isAdmin.toString()}</td>
+                <td>{user.isManager.toString()}</td>
                 <td>{user.isActive.toString()}</td>
+                <td>{user.adminRole}</td>
                 <td>
                   <input data-id={user.id} type="checkbox" checked={user.isAdmin} onChange={updateUser}/>
                 </td>

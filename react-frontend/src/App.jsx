@@ -5,9 +5,10 @@ import "bootstrap";
 
 function App() {
   const [users, setUsers] = useState([]);
-  const hostUrl = import.meta.env.PROD
-    ? window.location.href
-    : "http://localhost:8080/"; // looks for variable env.PROD in GCP, if nots exists it picks localhost url
+  // const hostUrl = import.meta.env.PROD
+   // ? window.location.href
+   // : "http://localhost:8080/"; // looks for variable env.PROD in GCP, if nots exists it picks localhost url
+   const hostUrl = "http://localhost:8080/";
 
   //async func looks for the response and react
   const fetchUsers = async () => {

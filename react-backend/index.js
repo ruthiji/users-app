@@ -29,11 +29,11 @@ sequelize.sync();
 
 
 const users = [
-    { name: "John Doe",  isManager: false, isActive: true},
-    { name: "Jane Smith", isManager: false, isActive: true},
-    { name: "Mike Johnson", isManager: false, isActive: true},
-    { name: "Sarah Williams", isManager: true, isActive: true},
-    { name: "David Brown", isManager: true, isActive: true}
+    { name: "John Doe",  isManager: false, isActive: true, adminRole: "N/A" },
+    { name: "Jane Smith", isManager: false, isActive: true, adminRole: "N/A"},
+    { name: "Mike Johnson", isManager: false, isActive: true, adminRole: "N/A"},
+    { name: "Sarah Williams", isManager: true, isActive: true, adminRole: "N/A"},
+    { name: "David Brown", isManager: true, isActive: true, adminRole: "N/A"}
 ];
 
 
@@ -59,7 +59,18 @@ app.get('/api/seeds', async (req, res) => {
 //GET API ENDPOINT
 app.get('/api/users', async (req, res) => {
     const users = await User.findAll();
-    res.json(users);
+    const adminRole = "role.admin";
+    const userManager = await User.findAll({where:{isManager: true}});
+    if (userManager.length === 0){
+        return res.json ({message: "No managers found"});
+    }
+    for (const user of userManager){
+        //user.name = name;
+        user.adminRole = adminRole;
+        await user.save();
+    }
+    const updatedUsers = await User.findAll();
+    res.json(updatedUsers);
 });
 
 app.get('/api/managers',async (req, res) => {
@@ -87,6 +98,19 @@ app.put('/api/addrole',async (req, res) => {
     res.json(users);
 
 });
+
+app.put('/api/addrole/:id',async (req, res) => {
+   const adminRole = "role.admin";
+    //const users = await User.update(req.body);
+    const { isManager  } = req.body;
+    const users = await User.findByPk(req.params.id);
+         users.isManager =  isManager;
+        users.adminRole = adminRole;
+        await users.save();
+    res.json(users);
+ });
+
+
 
 //GET BY ID
 app.get("/api/users/:id", async (req, res) => {

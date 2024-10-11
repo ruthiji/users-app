@@ -54,18 +54,49 @@ function App() {
     await fetchUsers();
   };
 
-  const updateUser = async (e) => {
-    const response = await fetch(`${hostUrl}api/users/${e.target.dataset.id}`, {
+  // const updateUser = async (e) => {
+  //   const response = await fetch(`${hostUrl}api/users/${e.target.dataset.id}`, {
+  //     method: "PUT",
+  //     headers: {
+  //       "Content-type": "application/json",
+  //     },
+  //     body: JSON.stringify({ isAdmin: e.target.checked }),
+  //   });
+  //   await response.json();
+  //   await fetchUsers();
+  // };
+   
+  const updateRole = async (e) => {
+      
+    // Update role status on the server
+    await fetch(`${hostUrl}api/addrole/${e.target.dataset.id}`, {
       method: "PUT",
       headers: {
         "Content-type": "application/json",
       },
-      body: JSON.stringify({ isAdmin: e.target.checked }),
+      body: JSON.stringify({ 
+        isManager: 'true',
+        adminRole:  "role.admin", }),
     });
-    await response.json();
-    await fetchUsers();
+  
+    let updatedUser;
+    if (e.target.checked) {
+      // Fetch updated user details if isAdmin is true
+      const response = await fetch(`${hostUrl}api/users/${e.target.dataset.id}`);
+      updatedUser = await response.json();
+    } else {
+      // If isAdmin is false, modify the user locally
+      updatedUser = users.find(user => user.id === e.target.dataset.id) || {};
+      updatedUser = { ...updatedUser, adminRole: 'N/A' };
+    }
+  
+    // Update state with the modified user
+    setUsers(prevUsers =>
+      prevUsers.map(user => (user.id === e.target.dataset.id ? updatedUser : user))
+    );
   };
-   
+
+
  /* const onsubmit = async (e) =>
   {
     e.preventDefault();
@@ -73,6 +104,14 @@ function App() {
    if (submitres != null){      
     console.log("Enter valid username");
     return;
+                <td>
+                  <button data-id={user.id} onClick={deleteUser}>Delete</button>
+                </td>
+              </tr>)
+              )
+            }</tbody>
+        </table>
+      </div>
   }
   else {
    return submitres;
@@ -112,7 +151,7 @@ function App() {
                 <td>{user.isActive.toString()}</td>
                 <td>{user.adminRole}</td>
                 <td>
-                  <input data-id={user.id} type="checkbox" checked={user.isAdmin} onChange={updateUser}/>
+                  <input data-id={user.id} type="checkbox" checked={user.isAdmin} onChange={updateRole}/>
                 </td>
                 <td>
                   <button data-id={user.id} onClick={deleteUser}>Delete</button>

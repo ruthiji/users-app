@@ -61,16 +61,20 @@ app.get('/api/users', async (req, res) => {
     const users = await User.findAll();
     const adminRole = "role.admin";
     const userManager = await User.findAll({where:{isManager: true}});
-    if (userManager.length === 0){
-        return res.json ({message: "No managers found"});
+    if (userManager.length != 0){
+
+        await Promise.all(userManager.map(async(user) => {  
+        
+            user.adminRole = adminRole;
+            await user.save();
+        }));
     }
-    for (const user of userManager){
-        //user.name = name;
-        user.adminRole = adminRole;
-        await user.save();
-    }
-    const updatedUsers = await User.findAll();
-    res.json(updatedUsers);
+        else {
+            res.json(users);
+        }
+         
+    //const updatedUsers = await User.findAll();
+    res.json(users);
 });
 
 app.get('/api/managers',async (req, res) => {
